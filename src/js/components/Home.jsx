@@ -21,6 +21,11 @@ const Home = () => {
 		}
 	}
 
+	const eliminarTarea = (indiceAEliminar) => {
+		setTareas(tareas.filter((_, index) => index !== indiceAEliminar));
+	};
+
+
 
 	return (
 		<>
@@ -28,14 +33,15 @@ const Home = () => {
 				<header><h1>Todas las tareas</h1></header>
 				<label className="form-label" htmlFor="name" >Ecribe una tarea</label>
 				<input className="form-control" id="name" type="text" value={inputValue} onChange={onInputChange} onKeyUp={handleKeyUp} />
-				<div>
 					{tareas.map((tarea, index) => (
-						<ul className="" key={index}>
-							<hr />{tarea}
-							<button className="boton">X</button>
+				<div className="" key={index}>
+						<ul  style={{ display: "flex", justifyContent: "space-between"}}>
+							<li style={{ listStyle: "none" }}>{tarea}</li>
+							<button onClick={() => eliminarTarea(index)}>X</button>
 						</ul>
-				))}
+						{index < tareas.length - 1 && <hr />}
 				</div>
+					))}
 			</div>
 		</>
 	);
