@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 //include images into your bundle
 import rigoImage from "../../img/rigo-baby.jpg";
@@ -24,6 +24,46 @@ const Home = () => {
 	const eliminarTarea = (indiceAEliminar) => {
 		setTareas(tareas.filter((_, index) => index !== indiceAEliminar));
 	};
+
+	const crearTareas = async () => {
+		const response = await fetch("https://playground.4geeks.com/todo/users/todos", {
+			method: "POST",
+			headers: {
+				"content-type":"application/json"
+			},
+			body: JSON.stringify(inputValue)
+		})
+		const data = await response.json();
+		console.log(data);
+		getTareas()
+	}
+
+	const getTareas = async () => {
+		const response = await fetch("https://playground.4geeks.com/todo/users/KuquyZ/tareas");
+		console.log(response);
+		if(!response.ok){
+			crearUsuario()
+			return
+		}
+		const data = await response.json();
+		console.log(data);
+		setTareas(data)
+	};
+
+	const crearUsuario = async () => {
+		const response = await fetch("https://playground.4geeks.com/todo/users/KuquyZ",{
+			method: "POST"
+		});
+		console.log(response);
+		const data = await response.json()
+		console.log(data);
+		
+		
+	}
+	useEffect(()=>{
+        getTareas()
+		
+	},[])
 
 
 
