@@ -16,22 +16,32 @@ const Home = () => {
 
 	const handleKeyUp = (e) => {
 		if (e.key == "Enter" && inputValue.trim() !== "") {
-			setTareas([...tareas, inputValue]);
+			crearTareas()
 			setInputValue("");
 		}
 	}
 
-	const eliminarTarea = (indiceAEliminar) => {
-		setTareas(tareas.filter((_, index) => index !== indiceAEliminar));
+	const eliminarTarea = async (idAEliminar) => {
+		const response = await fetch(`https://playground.4geeks.com/todo/todos/${idAEliminar}`,{
+			method: "DELETE"
+		})
+		if (response.ok)getTareas()
+		
+		
+
+		
 	};
 
 	const crearTareas = async () => {
-		const response = await fetch("https://playground.4geeks.com/todo/users/todos", {
+		const response = await fetch("https://playground.4geeks.com/todo/todos/kuquyz", {
 			method: "POST",
 			headers: {
-				"content-type":"application/json"
+				"content-type": "application/json"
 			},
-			body: JSON.stringify(inputValue)
+			body: JSON.stringify({
+				"label": inputValue,
+				"is_done": false
+			})
 		})
 		const data = await response.json();
 		console.log(data);
@@ -39,31 +49,31 @@ const Home = () => {
 	}
 
 	const getTareas = async () => {
-		const response = await fetch("https://playground.4geeks.com/todo/users/KuquyZ/tareas");
+		const response = await fetch("https://playground.4geeks.com/todo/users/kuquyz");
 		console.log(response);
-		if(!response.ok){
+		if (!response.ok) {
 			crearUsuario()
 			return
 		}
 		const data = await response.json();
 		console.log(data);
-		setTareas(data)
+		setTareas(data.todos)
 	};
 
 	const crearUsuario = async () => {
-		const response = await fetch("https://playground.4geeks.com/todo/users/KuquyZ",{
+		const response = await fetch("https://playground.4geeks.com/todo/users/kuquyz", {
 			method: "POST"
 		});
 		console.log(response);
 		const data = await response.json()
 		console.log(data);
-		
-		
+
+
 	}
-	useEffect(()=>{
-        getTareas()
-		
-	},[])
+	useEffect(() => {
+		getTareas()
+
+	}, [])
 
 
 
@@ -80,8 +90,8 @@ const Home = () => {
 						tareas.map((tarea, index) => (
 							<div key={index} style={{ padding: "5px 0" }}>
 								<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-									<span>{tarea}</span>
-									<button className="btn-eliminar" onClick={() => eliminarTarea(index)}>X</button>
+									<span>{tarea.label}</span>
+									<button className="btn-eliminar" onClick={() => eliminarTarea(tarea.id)}>X</button>
 								</div>
 								{index < tareas.length - 1 && <hr />}
 							</div>
